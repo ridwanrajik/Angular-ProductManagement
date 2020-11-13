@@ -100,7 +100,7 @@ export class ProductListComponent implements OnInit {
           next: products => {
             this.products = products;
             this.filteredProducts = this.products;
-            this.listFilter = 'cart';
+            // this.listFilter = 'cart';
           },
           error: err => this.errorMessage = err
         });
