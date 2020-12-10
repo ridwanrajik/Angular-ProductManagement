@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { IProduct } from './product';
 
@@ -9,10 +9,13 @@ import { IProduct } from './product';
     providedIn: 'root'
 })
 export class ProductService{
+  // If using Stackblitz, replace the url with this line
+  // because Stackblitz can't find the api folder.
+  // private productUrl = 'assets/products/products.json';
   private productUrl = 'api/products/products.json';
 
   constructor(private http: HttpClient) {}
-
+  // Retrieves products for Products List page
     getProducts(): Observable<IProduct[]> {
         return this.http.get<IProduct[]>(this.productUrl).pipe(
           tap(data => console.log('All: ' + JSON.stringify(data))),
@@ -20,7 +23,15 @@ export class ProductService{
         );
     }
 
-    private handleError(err: HttpErrorResponse) {
+    // Retrieves product for Product Detail page
+    getProduct(id: number): Observable<IProduct | undefined> {
+      return this.getProducts()
+        .pipe(
+          map((products: IProduct[]) => products.find(p => p.productId === id))
+        );
+    }
+
+    private handleError(err: HttpErrorResponse): Observable<never> {
       // in a real world app, we may send the server to some remote logging infrastructure
       // instead of just logging it to the console
       let errorMessage = '';
